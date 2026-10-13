@@ -49,7 +49,7 @@ declare global {
 let ytApi: Promise<YTNamespace> | null = null;
 
 function loadYouTubeApi() {
-  ytApi ??= new Promise((resolve) => {
+  ytApi ??= new Promise((resolve, reject) => {
     if (window.YT?.Player) return resolve(window.YT);
     const previous = window.onYouTubeIframeAPIReady;
     window.onYouTubeIframeAPIReady = () => {
@@ -59,6 +59,10 @@ function loadYouTubeApi() {
     const script = document.createElement("script");
     script.src = "https://www.youtube.com/iframe_api";
     script.async = true;
+    // youtube.com diblokir jaringan / ad blocker: tampilkan pesan, jangan kotak hitam.
+    script.onerror = () => {
+      reject(new Error("YouTube API gagal dimuat"));
+    };
     document.head.appendChild(script);
   });
   return ytApi;
@@ -135,11 +139,10 @@ export default function MusicPlayer() {
     loadYouTubeApi().then((YT) => {
       if (cancelled) return;
       playerRef.current = new YT.Player(el, {
-        host: "https://www.youtube-nocookie.com",
         videoId: PLAYLIST[indexRef.current].youtubeId,
         width: "100%",
         height: "100%",
-        playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
+        playerVars: { playsinline: 1, rel: 0, origin: window.location.origin },
         events: {
           onReady: () => {
             readyRef.current = true;
@@ -165,6 +168,8 @@ export default function MusicPlayer() {
           },
         },
       });
+    }).catch(() => {
+      if (!cancelled) setError(true);
     });
 
     return () => {

@@ -17,8 +17,13 @@ const description =
 
 export const metadata: Metadata = {
   // Isi NEXT_PUBLIC_SITE_URL dengan domain asli saat deploy, supaya link
-  // gambar preview (Open Graph) benar.
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  // gambar preview (Open Graph) benar. Di Vercel, domain produksi dipakai otomatis.
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : "http://localhost:3000"),
+  ),
   title: {
     default: "Song Xinran · SNH48 Fan Site",
     template: "%s · Song Xinran",
@@ -41,6 +46,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // Ekstensi browser (mis. QuillBot) menambah atribut ke <html> sebelum React jalan.
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

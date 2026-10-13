@@ -14,6 +14,7 @@ export const PLAYLIST: Track[] = [
   { title: "缘说 (Fate Theory)", artist: "Song Xinran · Rebirth For You OST", youtubeId: "g3r0N0ruk4M" },
   { title: "无怨 (No Resentment)", artist: "Song Xinran · Rebirth For You OST", youtubeId: "Emt0klJChZo" },
   { title: "Ice Queen", artist: "SNH48 Team X · Song Xinran", youtubeId: "QtWJQMx_KBo" },
+  { title: "怦然心动 (Bong! Bong! Bong!)", artist: "SNH48 · Song Xinran (center)", youtubeId: "uDbv9vlZIEg" },
 ];
 
 export const ytMusicUrl = (id: string) => `https://music.youtube.com/watch?v=${id}`;
